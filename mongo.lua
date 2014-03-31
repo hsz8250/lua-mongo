@@ -1,6 +1,7 @@
 local bson = require "bson"
 local socket = require "mongo.socket"
 local driver = require "mongo.driver"
+local md5    = require "md5"
 local rawget = rawget
 local assert = assert
 
@@ -94,6 +95,29 @@ function mongo_client:genId()
 	local id = self.__id + 1
 	self.__id = id
 	return id
+end
+
+function mongo_db:auth(user,password)
+    
+        local password_md5 = md5.new()
+        md5.append(password_md5,user)
+        md5.append(password_md5,":mongo:")
+        md5.append(password_md5,password)
+        local password = md5.encode(password_md5)
+       
+        local result= self:runCommand ("getnonce",1)
+        if result.ok ~= 1 then
+            return 0
+        end
+
+        local key_md5 = md5.new()
+        md5.append(key_md5,result.nonce)
+        md5.append(key_md5,"root")
+        md5.append(key_md5,password)
+        local key   = md5.encode(key_md5)
+        local result= self:runCommand ("authenticate",1,"user","root","nonce",result.nonce,"key",key)
+        return result.ok
+
 end
 
 function mongo_client:runCommand(...)

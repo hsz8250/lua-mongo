@@ -10,6 +10,8 @@ end
 
 
 local loc = db:getDB "hello"
+local r   = loc:auth("root","2013")
+print("auth " .. r)
 local c = loc.system.namespaces:find()
 
 while c:hasNext() do
