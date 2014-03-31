@@ -112,10 +112,10 @@ function mongo_db:auth(user,password)
 
         local key_md5 = md5.new()
         md5.append(key_md5,result.nonce)
-        md5.append(key_md5,"root")
+        md5.append(key_md5,user)
         md5.append(key_md5,password)
         local key   = md5.encode(key_md5)
-        local result= self:runCommand ("authenticate",1,"user","root","nonce",result.nonce,"key",key)
+        local result= self:runCommand ("authenticate",1,"user",user,"nonce",result.nonce,"key",key)
         return result.ok
 
 end
