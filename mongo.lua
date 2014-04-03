@@ -97,7 +97,7 @@ function mongo_client:genId()
 	return id
 end
 
-function mongo_db:auth(user,password)
+function mongo_client:auth(user,password)
         local password_md5 = md5.new()
         md5.append(password_md5,user)
         md5.append(password_md5,":mongo:")
@@ -119,7 +119,7 @@ function mongo_db:auth(user,password)
 
 end
 
-function mongo_db:logout(user,password)
+function mongo_client:logout(user,password)
 	local result = self:runCommand ("logout",1)
 	return result.ok
 end

@@ -1,6 +1,8 @@
 mongo = require "mongo"
 
 db = mongo.client { host = "localhost" }
+local r   = db:auth("root","91wanblcx2013")
+print("auth " .. r)
 
 local r = db:runCommand "listDatabases"
 
@@ -10,8 +12,6 @@ end
 
 
 local loc = db:getDB "hello"
-local r   = loc:auth("root","2013")
-print("auth " .. r)
 local c = loc.system.namespaces:find()
 
 while c:hasNext() do
